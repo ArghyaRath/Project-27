@@ -1,83 +1,78 @@
-
 const Engine = Matter.Engine;
-const World = Matter.World;
+const World= Matter.World;
 const Bodies = Matter.Bodies;
-const Body = Matter.Body;
-const Render = Matter.Render;
-const Constraint = Matter.Constraint;
-var bob1,bob2,bob3, bob4,bob5, roofObject
-var rope1,rope2,rope3, rope4,rope5;
-var world;
+var ground;
+var cLog, chain;
 
+var engine, world;
+var box1,box2,box3,box4,box5;
+var pig1,pig2;
+var log1,log2,log3,log4;
+var bird;
+var bgImage;
 
-function setup() {
-	createCanvas(800, 600);
-	rectMode(CENTER);
-
-
-	engine = Engine.create();
-	world = engine.world;
-
-	roofObject=new roof(400,250,230,20);
-	bob1 = new bob(320,575,40)
-	bob2 = new bob(360,575,40)
-	bob3 = new bob(400,575,40)
-	bob4 = new bob(440,575,40)
-	bob5 = new bob(480,575,40)
-	
-	rope1=new rope(bob1.body,roofObject.body,-80)
-	rope2=new rope(bob2.body,roofObject.body,-40)
-	rope3=new rope(bob3.body,roofObject.body,0)
-	rope4=new rope(bob4.body,roofObject.body,40)
-	rope5=new rope(bob5.body,roofObject.body,80)
-	
-	Engine.run(engine);
-	
-  
+function preload(){
+    bgImage = loadImage("sprites/bg.png");
 }
 
-function draw() {
-  rectMode(CENTER);
-  background(230);
-  roofObject.display();
+function setup(){
+    var canvas = createCanvas(1200,400);
+    engine = Engine.create();
+    world = engine.world;
 
-  rope1.display();
-  rope2.display();
-  rope3.display();
-  rope4.display();
-  rope5.display();
+    platform = new Ground(175, 300, 325, 175);
 
-  bob1.display();
-  bob2.display();
-  
-  bob3.display();
-  bob4.display();
-  bob5.display();
+    ground = new Ground(600,390,1200,10);
+    box1 = new Box(700,300,50,50); 
+    box2 = new Box(900,300,50,50); 
+    pig1 = new Pig(800,300); 
+    log1 = new Log(800,240,350,PI/2); 
+    box3 = new Box(700,200,50,50); 
+    box4 = new Box(900,200,50,50); 
+    pig2 = new Pig(800,200); 
+    log2 = new Log(800,180,350,PI/2); 
+    box5 = new Box(800,150,50,50); 
+    log3 = new Log(765,140,150,PI/7); 
+    log4 = new Log(835,140,150,-PI/7);
+    bird = new Bird(200,100);
+    cLog = new Log(200, 100, 80, PI/2);
+    chain = new Chain(bird, {x:200, y:100})
+    /*var options = {
+        bodyA: bird.body,
+        bodyB: cLog.body,
+        length: 100,
+        stiffness: 0.05
+    }
+    chain = Matter.Constraint.create(options);
+    World.add(world,chain);*/
+    
 }
 
+function draw(){
+    background(255);
+    Engine.update(engine);
+    ground.display();
+    box1.display(); 
+    box2.display(); 
+    pig1.display(); 
+    log1.display(); 
+    box3.display(); 
+    box4.display(); 
+    pig2.display(); 
+    log2.display(); 
+    box5.display(); 
+    log3.display(); 
+    log4.display();
+    bird.display();
+    platform.display();
+    chain.display();
+    //line (bird.body.position.x,bird.body.position.y,cLog.body.position.x,cLog.body.position.y);
+}
 
-//CHOOSE THE CORRECT OPTION TO APPLY A KEYPRESSED TO CHANGE THE POSITION OF BALL OBJECT TO THE LEFT WHEN UP ARROW KEY IS PRESSED
+function mouseDragged(){
+    Matter.Body.setPosition(bird.body,{x:mouseX,y:mouseY});
+}
 
-// function keyPressed() {
-// 	if (keyCode === DOWN_ARROW) {
-// 		Matter.Body.applyForce(bob1.body,bob1.body.position,{x:-50,y:-45});
-// 	}
-// }
-
-// function keyPressed() {
-// 	if (keyCode === UP_ARROW) {
-// 		Matter.Body.applyForce(bob1,bob1.position,{x:-50,y:-45});
-// 	}
-// }
-
- //function keyPressed() {
- //	if (keyCode === UP_ARROW) {
- //		Matter.Body.applyForce(bob1.body,{x:-50,y:-45});
- //	}
-// }
-
- function keyPressed() {
- 	if (keyCode === UP_ARROW) {
- 		Matter.Body.applyForce(bob1.body,bob1.body.position,{x:-50,y:-45});
- 	}
- }
+function mouseReleased(){
+    chain.fly();
+}
